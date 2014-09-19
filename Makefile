@@ -1,50 +1,34 @@
-## keyd
+## hotkeyd
 ##
-## developed by benjamin bolton
-## https://bennybolton.com/
+## Forked from Benjamin Bolton's keyd
+## https://bennybolton.com
 ## license: GPLv3
 
 CC="gcc"
-DESTDIR=""
-VERSION="0.4.0"
+VERSION="0.4.1"
 
-all: keyd
+all: hotkeyd
 
-keyd:
-	$(CC) keyd.c -o keyd
-
-run: keyd
-	./keyd
+hotkeyd:
+	$(CC) hotkeyd.c -o hotkeyd
 
 clean:
-	rm -f keyd
+	rm -f hotkeyd
 
 install: all
-	mkdir $(DESTDIR)/usr/bin -p
-	mkdir $(DESTDIR)/etc/rc.d -p
-	mkdir $(DESTDIR)/usr/lib/systemd/system -p
-	cp keyd $(DESTDIR)/usr/bin/
-	cp keyd.daemon $(DESTDIR)/etc/rc.d/keyd
-	cp keyd.conf $(DESTDIR)/etc/
-	cp keyd.service $(DESTDIR)/usr/lib/systemd/system/
+	mkdir /usr/bin -p
+	mkdir /etc/rc.d -p
+	mkdir /usr/lib/systemd/system -p
+	cp hotkeyd         /usr/bin/
+	cp hotkeyd.daemon  /etc/rc.d/hotkeyd
+#	cp hotkeyd.conf    /etc/
+	cp hotkeyd.service /usr/lib/systemd/system/
 
 uninstall:
-	rm -f $(DESTDIR)/usr/bin/keyd
-	rm -f $(DESTDIR)/etc/rc.d/keyd
-	rm -f $(DESTDIR)/etc/keyd.conf
-	rm -f $(DESTDIR)/usr/lib/systemd/system/keyd.service
-
-package:
-	rm -fR "keyd-$(VERSION)"
-	mkdir "keyd-$(VERSION)"
-	cp keyd.c keys.h log.h input-dev.h Makefile keyd.conf keyd.daemon keyd.service README "keyd-$(VERSION)"
-	tar -czf "keyd-$(VERSION).tar.gz" "keyd-$(VERSION)"
-	md5sum "keyd-$(VERSION).tar.gz" > md5sum
-	rm -fR tarball
-	mkdir tarball
-	sed "s|pkgver=.*|pkgver=$(VERSION)|;s|md5sums=.*|md5sums=('`md5sum keyd-$(VERSION).tar.gz | awk '{print $$1;}'`')|" PKGBUILD.template > tarball/PKGBUILD
-	cp "keyd-$(VERSION).tar.gz" tarball
-	cd tarball; makepkg --allsource
-	echo -e "cd /srv/ftp/keyd\nmkdir $(VERSION)\ncd $(VERSION)\nput keyd-$(VERSION).tar.gz\nput md5sum\nput tarball/PKGBUILD\nexit" | sftp root@bennybolton.com
+	rm -f /usr/bin/hotkeyd
+	rm -f /etc/rc.d/hotkeyd
+#	rm -f /etc/hotkeyd.conf
+	rm -f /usr/lib/systemd/system/keyd.service
 
 recompile: clean all
+

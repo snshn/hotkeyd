@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## keyd daemon script
+## hotkeyd daemon script
 ##
 ## developed by benjamin bolton
 ## https://bennybolton.com/
@@ -9,25 +9,25 @@
 . /etc/rc.conf
 . /etc/rc.d/functions
 
-PID=`pidof /usr/bin/keyd`
+PID=`pidof /usr/bin/hotkeyd`
 case "$1" in
 	start)
-		stat_busy "Starting keyd"
-		[ -z "$PID" ] && /usr/bin/keyd -l /var/log/keyd.log &
+		stat_busy "Starting hotkeyd"
+		[ -z "$PID" ] && /usr/bin/hotkeyd -l /var/log/hotkeyd.log &
 		if [ $? -gt 0 ]; then
 			stat_fail
 		else
-			add_daemon keyd
+			add_daemon hotkeyd
 			stat_done
 		fi
 		;;
 	stop)
-		stat_busy "Stopping keyd"
+		stat_busy "Stopping hotkeyd"
 		[ ! -z "$PID" ] && kill $PID &> /dev/null
 		if [ $? -gt 0 ]; then
 			stat_fail
 		else
-			rm_daemon keyd
+			rm_daemon hotkeyd
 			stat_done
 		fi
 		;;

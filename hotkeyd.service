@@ -1,4 +1,4 @@
-## keyd daemon script
+## hotkeyd daemon script
 ##
 ## developed by benjamin bolton
 ## https://bennybolton.com/
@@ -9,7 +9,7 @@ Description=Key Daemon
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/keyd
+ExecStart=/usr/bin/hotkeyd
 
 [Install]
 WantedBy=multi-user.target
