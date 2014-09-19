@@ -1,0 +1,15 @@
+## keyd daemon script
+##
+## developed by benjamin bolton
+## https://bennybolton.com/
+## license: GPLv3
+
+[Unit]
+Description=Key Daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/keyd
+
+[Install]
+WantedBy=multi-user.target

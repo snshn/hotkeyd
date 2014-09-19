@@ -1,0 +1,41 @@
+#!/bin/sh
+
+## keyd daemon script
+##
+## developed by benjamin bolton
+## https://bennybolton.com/
+## license: GPLv3
+
+. /etc/rc.conf
+. /etc/rc.d/functions
+
+PID=`pidof /usr/bin/keyd`
+case "$1" in
+	start)
+		stat_busy "Starting keyd"
+		[ -z "$PID" ] && /usr/bin/keyd -l /var/log/keyd.log &
+		if [ $? -gt 0 ]; then
+			stat_fail
+		else
+			add_daemon keyd
+			stat_done
+		fi
+		;;
+	stop)
+		stat_busy "Stopping keyd"
+		[ ! -z "$PID" ] && kill $PID &> /dev/null
+		if [ $? -gt 0 ]; then
+			stat_fail
+		else
+			rm_daemon keyd
+			stat_done
+		fi
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo "usage: $0 {start|stop|restart}"  
+esac
+exit 0
