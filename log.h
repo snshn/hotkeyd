@@ -37,31 +37,4 @@ void log_error(const char *text,...){
 	va_end(args);
 }
 
-int open_logs(const char *msg,const char *com){
-	if(msg){
-		keyd_log=fopen(msg,"w");
-		if(!keyd_log){
-			log_error("Failed to open log file %s\n",msg);
-			return -1;
-		}
-	}
-	if(com){
-		com_log=open(com,O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-		if(com_log==-1){
-			log_error("Failed to open log file %s\n",com);
-			return -1;
-		}
-	}
-	return 0;
-}
-
-void close_logs(){
-	if(keyd_log){
-		fclose(keyd_log);
-	}
-	if(com_log!=-1){
-		close(com_log);
-	}
-}
-
 #endif

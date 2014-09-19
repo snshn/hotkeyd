@@ -37,8 +37,6 @@ int is_white_space(int c)
 
 #define DEF_CONFIG     "/etc/hotkeyd.conf"
 #define CALL_BIN       "/bin/sh"
-#define DEF_KEYD_LOG   NULL
-#define DEF_COM_LOG    "/var/log/hotkeyd.command.log"
 
 #define COUNT_MODS     9
 
@@ -55,9 +53,11 @@ void new_hot_key(const char *txt)
 {
     struct hot_key *tmp;
     int i;
+
     if(!txt) {
         return;
     }
+
     if(first) {
         tmp = first;
         while(tmp->next) {
@@ -77,9 +77,12 @@ void new_hot_key(const char *txt)
             return;
         }
     }
+
     tmp->next = NULL;
     tmp->mods = 0;
-    while(!is_white_space(txt[0])){
+
+    while(!is_white_space(txt[0]))
+    {
         i = get_mod_value(&txt);
         if(i == 0){
             break;
@@ -89,21 +92,28 @@ void new_hot_key(const char *txt)
             txt++;
         }
     }
+
     tmp->key = get_key_value(&txt);
+
     while(!is_white_space(txt[0])){
         txt++;
     }
+
     while(txt[0] != 0 && is_white_space(txt[0])){
         txt++;
     }
+
     i = strlen(txt)+1;
     tmp->command = (char*)malloc(sizeof(char)*i);
     tmp->command[0] = 0;
+
     strcpy(tmp->command, txt);
+
     while(is_white_space(tmp->command[i])){
         tmp->command[i] = 0;
         i--;
     }
+
     if(verbose_flag){
         log_msg("New command \"%s\" with key %s value %i and mods %i:\n",tmp->command,get_key_name(tmp->key),tmp->key,tmp->mods);
         for(i = 0; i < COUNT_MODS; i++){
@@ -139,7 +149,6 @@ static struct option long_opts[] = {
     {"config",    required_argument,  0, 'c'},
     {"test",      no_argument,        0, 't'},
     {"quiet",     no_argument,        0, 'q'},
-    {"log",       required_argument,  0, 'l'},
     {"output",    required_argument,  0, 'o'},
     {0,           0,                  0, 0}
 };
@@ -163,7 +172,6 @@ void on_close(int sig)
         tmp = tmp2;
     }
 
-    close_logs();
     exit(0);
 }
 
@@ -172,10 +180,6 @@ void run_command(const char *command)
     pid_t pID = fork();
 
     if(pID == 0){
-        if(com_log != -1){
-            dup2(com_log, 1);
-            dup2(com_log, 2);
-        }
         execl(CALL_BIN, CALL_BIN, "-c", command, NULL);
         exit(-1);
     } else if(pID < 0){
@@ -188,8 +192,6 @@ int main(int argc, char *argv[])
     int input_stream, test_flag = 0, c, opt_index, mods = 0, i, j, free_input = 0;
     FILE *fp;
     char *input = NULL;
-    const char *keyd_log_name = DEF_KEYD_LOG;
-    const char *com_log_name = DEF_COM_LOG;
     input_stream = open(input, O_RDONLY);
     const char *config = DEF_CONFIG, *tmpc;
     char *line = NULL, *tmp;
@@ -200,7 +202,7 @@ int main(int argc, char *argv[])
 
     while(1)
     {
-        c = getopt_long(argc, argv, "i:c:l:o:tqh", long_opts, &opt_index);
+        c = getopt_long(argc, argv, "i:c:tqh", long_opts, &opt_index);
 
         if(c == -1){
             break;
@@ -223,14 +225,6 @@ int main(int argc, char *argv[])
                 verbose_flag = 0;
                 break;
 
-            case 'l':
-                keyd_log_name = optarg;
-                break;
-
-            case 'o':
-                com_log_name = optarg;
-                break;
-
             case 'h':
             case '?':
                 printf("usage: %s [options]\n\nOptions:\n -h --help      Show this help\n -i --input     Input to connect to\n", argv[0]);
@@ -239,10 +233,7 @@ int main(int argc, char *argv[])
                 return (c != 'h');
         }
     }
-    
-    if(open_logs(keyd_log_name, com_log_name) != 0){
-        exit(-1);
-    }
+
     if(!test_flag){
         fp = fopen(config, "r");
 

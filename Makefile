@@ -7,7 +7,7 @@
 CC="gcc"
 VERSION="0.4.1"
 
-all: hotkeyd
+all: clean hotkeyd
 
 hotkeyd:
 	$(CC) hotkeyd.c -o hotkeyd
