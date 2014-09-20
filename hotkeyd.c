@@ -1,12 +1,12 @@
 /*
     hotkeyd.c
 
-    developed by benjamin bolton
-    https://bennybolton.com/
+    Forked from Benjamin Bolton's keyd
     license: GPLv3
 */
 
 #include <linux/input.h>
+#include <sys/inotify.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -37,7 +37,6 @@ int is_white_space(int c)
 
 #define DEF_CONFIG     "/etc/hotkeyd.conf"
 #define CALL_BIN       "/bin/sh"
-
 #define COUNT_MODS     9
 
 struct hot_key {

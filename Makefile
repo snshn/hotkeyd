@@ -1,10 +1,10 @@
-## hotkeyd
+## Makefile for hotkeyd
 ##
 ## Forked from Benjamin Bolton's keyd
-## https://bennybolton.com
 ## license: GPLv3
 
 CC="gcc"
+DESTDIR=""
 VERSION="0.4.1"
 
 all: clean hotkeyd
@@ -16,19 +16,19 @@ clean:
 	rm -f hotkeyd
 
 install: all
-	mkdir /usr/bin -p
-	mkdir /etc/rc.d -p
-	mkdir /usr/lib/systemd/system -p
-	cp hotkeyd         /usr/bin/
-	cp hotkeyd.daemon  /etc/rc.d/hotkeyd
-#	cp hotkeyd.conf    /etc/
-	cp hotkeyd.service /usr/lib/systemd/system/
+	mkdir $(DESTDIR)/usr/bin -p
+	mkdir $(DESTDIR)/etc/rc.d -p
+	mkdir $(DESTDIR)/usr/lib/systemd/system -p
+	cp hotkeyd         $(DESTDIR)/usr/bin/
+	cp hotkeyd.daemon  $(DESTDIR)/etc/rc.d/hotkeyd
+	cp hotkeyd.conf    $(DESTDIR)/etc/
+	cp hotkeyd.service $(DESTDIR)/usr/lib/systemd/system/
 
 uninstall:
-	rm -f /usr/bin/hotkeyd
-	rm -f /etc/rc.d/hotkeyd
-#	rm -f /etc/hotkeyd.conf
-	rm -f /usr/lib/systemd/system/keyd.service
+	rm -f $(DESTDIR)/usr/bin/keyd
+	rm -f $(DESTDIR)/etc/rc.d/keyd
+	rm -f $(DESTDIR)/etc/keyd.conf
+	rm -f $(DESTDIR)/usr/lib/systemd/system/keyd.service
 
 recompile: clean all
 
