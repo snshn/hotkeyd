@@ -1,13 +1,15 @@
 hotkeyd
 ===
 
-Fork of keyd (originally developed by Benjamin Bolton).
+Hotkeyd is a tiny daemon which runs in the background and 
+executes commands tied to certain keypresses in the config file.
 
+Based on keyd developed by Benjamin Bolton.
 
 CHANGES
 ---
 - renamed to hotkeyd
-- no logging to files of any sorts
+- no logging to files
 
 
 LICENSE
@@ -87,5 +89,5 @@ hotkeyd can also be run indepently of the daemon scripts by running
 
 THANKS
 ---
-1. to Benjamin Bolton for sharing the code for keyd
+1. to Benjamin Bolton for sharing the keyd's source code
 

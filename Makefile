@@ -10,7 +10,7 @@ VERSION="0.4.1"
 all: clean hotkeyd
 
 hotkeyd:
-	$(CC) hotkeyd.c -o hotkeyd
+	$(CC) src/hotkeyd.c -o hotkeyd
 
 clean:
 	rm -f hotkeyd

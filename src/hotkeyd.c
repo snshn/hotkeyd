@@ -256,11 +256,11 @@ int main(int argc, char *argv[])
         fclose(fp);
         fp = NULL;
     }
-    
+
     signal(SIGINT,  on_close);
     signal(SIGTERM, on_close);
     signal(SIGCHLD, SIG_IGN);
-    
+
     if(!input) {
         input = default_device();
 
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
 
             if(i > 0) mods &= ~i;
         }
-        
+
     }
 
     on_close(0);
