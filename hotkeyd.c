@@ -65,14 +65,14 @@ void new_hot_key(const char *txt)
         tmp->next = (struct hot_key*)malloc(sizeof(struct hot_key));
         tmp = tmp->next;
         if(!tmp) {
-            log_error("warning: Failed to allocate hot_key pointer\n");
+            log_err("warning: Failed to allocate hot_key pointer\n");
             return;
         }
     } else {
         tmp = (struct hot_key*)malloc(sizeof(struct hot_key));
         first = tmp;
-        if(!tmp){
-            log_error("warning: Failed to allocate hot_key pointer\n");
+        if(!tmp) {
+            log_err("warning: Failed to allocate hot_key pointer\n");
             return;
         }
     }
@@ -80,44 +80,42 @@ void new_hot_key(const char *txt)
     tmp->next = NULL;
     tmp->mods = 0;
 
-    while(!is_white_space(txt[0]))
-    {
+    while(!is_white_space(txt[0])) {
         i = get_mod_value(&txt);
-        if(i == 0){
+
+        if(i == 0) {
             break;
         }
+
         tmp->mods |= i;
-        if(!is_white_space(txt[0])){
+
+        if(!is_white_space(txt[0])) {
             txt++;
         }
     }
 
     tmp->key = get_key_value(&txt);
 
-    while(!is_white_space(txt[0])){
-        txt++;
-    }
+    while(!is_white_space(txt[0])) txt++;
 
-    while(txt[0] != 0 && is_white_space(txt[0])){
-        txt++;
-    }
+    while(txt[0] != 0 && is_white_space(txt[0])) txt++;
 
     i = strlen(txt)+1;
-    tmp->command = (char*)malloc(sizeof(char)*i);
+    tmp->command = (char*)malloc(sizeof(char) * i);
     tmp->command[0] = 0;
 
     strcpy(tmp->command, txt);
 
-    while(is_white_space(tmp->command[i])){
+    while(is_white_space(tmp->command[i])) {
         tmp->command[i] = 0;
         i--;
     }
 
-    if(verbose_flag){
-        log_msg("New command \"%s\" with key %s value %i and mods %i:\n",tmp->command,get_key_name(tmp->key),tmp->key,tmp->mods);
-        for(i = 0; i < COUNT_MODS; i++){
-            if((tmp->mods >> i) & 1){
-                log_msg("  %s value %i\n", mod_mapped[i].name,mod_mapped[i].map);
+    if(verbose_flag) {
+        log_msg("New command \"%s\" with key %s value %i and mods %i:\n", tmp->command, get_key_name(tmp->key), tmp->key, tmp->mods);
+        for(i = 0; i < COUNT_MODS; i++) {
+            if((tmp->mods >> i) & 1) {
+                log_msg("  %s value %i\n", mod_mapped[i].name, mod_mapped[i].map);
             }
         }
     }
@@ -132,13 +130,13 @@ struct hot_key *get_hot_key(int key, int mods)
         return NULL;
     }
 
-    while(tmp)
-    {
+    while(tmp) {
         if (key == tmp->key && mods == tmp->mods) {
             return tmp;
         }
         tmp = tmp->next;
     }
+
     return NULL;
 }
 
@@ -157,17 +155,19 @@ void on_close(int sig)
     struct hot_key *tmp = first, *tmp2;
     first = NULL;
 
-    if (verbose_flag) {
+    if(verbose_flag) {
         log_msg("\nCleaning up\n");
     }
 
-    while(tmp)
-    {
+    while(tmp) {
         tmp2 = tmp->next;
+
         if(tmp->command){
             free(tmp->command);
         }
+
         free(tmp);
+
         tmp = tmp2;
     }
 
@@ -178,11 +178,11 @@ void run_command(const char *command)
 {
     pid_t pID = fork();
 
-    if(pID == 0){
+    if(pID == 0) {
         execl(CALL_BIN, CALL_BIN, "-c", command, NULL);
         exit(-1);
-    } else if(pID < 0){
-        log_error("Failed to fork process!\n");
+    } else if(pID < 0) {
+        log_err("Failed to fork process!\n");
     }
 }
 
@@ -199,11 +199,10 @@ int main(int argc, char *argv[])
     struct hot_key *hk;
     struct input_event ev;
 
-    while(1)
-    {
+    while(1) {
         c = getopt_long(argc, argv, "i:c:tqh", long_opts, &opt_index);
 
-        if(c == -1){
+        if(c == -1) {
             break;
         }
 
@@ -233,31 +232,26 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(!test_flag){
+    if(!test_flag) {
         fp = fopen(config, "r");
 
-        if (!fp) {
-            log_error("Failed to open config file %s\n", config);
+        if(!fp) {
+            log_err("Failed to open config file %s\n", config);
             return 1;
         }
 
-        while(getline(&line, &len, fp) != -1)
-        {
+        while(getline(&line, &len, fp) != -1) {
             if(line) {
                 tmp = line;
-                while(tmp[0] != 0 && is_white_space(tmp[0]))
-                {
-                    tmp++;
-                }
-                if(tmp[0] != 0 && tmp[0] != '#') {
+
+                while(tmp[0] != 0 && is_white_space(tmp[0])) tmp++;
+
+                if(tmp[0] != 0 && tmp[0] != '#')
                     new_hot_key(tmp);
-                }
             }
         }
 
-        if(line) {
-            free(line);
-        }
+        if(line) free(line);
 
         fclose(fp);
         fp = NULL;
@@ -271,7 +265,7 @@ int main(int argc, char *argv[])
         input = default_device();
 
         if(!input) {
-            log_error("Failed to determine default device!\n");
+            log_err("Failed to determine default device!\n");
             return -1;
         } else {
             free_input = 1;
@@ -281,13 +275,13 @@ int main(int argc, char *argv[])
     input_stream = open(input, O_RDONLY);
 
     if(input_stream == -1) {
-        log_error("Failed to open %s\n", input);
+        log_err("Failed to open %s\n", input);
         if(free_input) {
             free(input);
         }
         return 1;
     } else {
-        log_msg("Successfully opened %s\n",input);
+        log_msg("Successfully opened %s\n", input);
     }
 
     if(free_input) {
@@ -309,7 +303,9 @@ int main(int argc, char *argv[])
                 mods |= i;
             } else if(test_flag) {
                 log_msg("Key name: ");
+
                 j = 0;
+
                 for(i = 0; i < COUNT_MODS; i++) {
                     if((mods >> i) & 1) {
                         if(j) {
@@ -321,6 +317,7 @@ int main(int argc, char *argv[])
                         j = 1;
                     }
                 }
+
                 if(j) {
                     log_msg("+%s\n", get_key_name(ev.code));
                 } else {
@@ -328,18 +325,19 @@ int main(int argc, char *argv[])
                 }
             } else {
                 hk = get_hot_key(ev.code, mods);
+
                 if(hk) {
                     if(verbose_flag) {
                         log_msg("Match running command \"%s\"\n", hk->command);
                     }
+
                     run_command(hk->command);
                 }
             }
         } else if(ev.value == 0){
             i = get_mod_value_from_map(ev.code);
-            if(i > 0) {
-                mods &= ~i;
-            }
+
+            if(i > 0) mods &= ~i;
         }
         
     }

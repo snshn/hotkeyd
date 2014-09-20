@@ -15,7 +15,7 @@ struct mod_map {
     int map,value;
 };
 
-static struct key_map mapped[]={
+static struct key_map mapped[] = {
     {"9",                        KEY_9},
     {"0",                        KEY_0},
     {"MINUS",                    KEY_MINUS},
@@ -393,7 +393,7 @@ static struct key_map mapped[]={
     {NULL,                       0}
 };
 
-static struct mod_map mod_mapped[]={
+static struct mod_map mod_mapped[] = {
     {"LEFTCTRL",                 KEY_LEFTCTRL,     1},
     {"LEFTSHIFT",                KEY_LEFTSHIFT,    2},
     {"RIGHTSHIFT",               KEY_RIGHTSHIFT,   4},
@@ -403,14 +403,15 @@ static struct mod_map mod_mapped[]={
     {"LEFTMETA",                 KEY_LEFTMETA,     64},
     {"RIGHTMETA",                KEY_RIGHTMETA,    128},
     {"FN",                       KEY_FN,           256},
-    {NULL,                       0,                 0}
+    {NULL,                       0,                0}
 };
 
-const char *get_key_name(int i) {
+const char *get_key_name(int i)
+{
     int c;
 
     for(c = 0; mapped[c].map != 0; c++) {
-        if(mapped[c].map==i) {
+        if(mapped[c].map == i) {
             return mapped[c].name;
         }
     }
@@ -418,17 +419,20 @@ const char *get_key_name(int i) {
     return NULL;
 }
 
-int get_key_value(const char **txt) {
+int get_key_value(const char **txt)
+{
     if(!txt || !txt[0]){
         return 0;
     }
 
-    int c,i;
+    int c, i;
 
-    for(c=0;mapped[c].map!=0;c++){
-        i=strlen(mapped[c].name);
-        if(strncmp(mapped[c].name,txt[0],i)==0 && (is_white_space(txt[0][i]) || txt[0][i]==0 || txt[0][i]=='+')){
-            txt[0]+=i;
+    for(c = 0; mapped[c].map != 0; c++) {
+        i = strlen(mapped[c].name);
+        if(strncmp(mapped[c].name, txt[0], i) == 0
+           && (is_white_space(txt[0][i]) || txt[0][i] == 0 || txt[0][i] == '+')
+        ) {
+            txt[0] += i;
             return mapped[c].map;
         }
     }
@@ -436,11 +440,12 @@ int get_key_value(const char **txt) {
     return 0;
 }
 
-const char *get_mod_name(int i) {
+const char *get_mod_name(int i)
+{
     int c;
 
-    for(c=0;mod_mapped[c].map!=0;c++){
-        if(mod_mapped[c].map==i){
+    for(c = 0; mod_mapped[c].map != 0; c++) {
+        if(mod_mapped[c].map == i) {
             return mod_mapped[c].name;
         }
     }
@@ -448,17 +453,20 @@ const char *get_mod_name(int i) {
     return NULL;
 }
 
-int get_mod_value(const char **txt) {
-    if(!txt || !txt[0]){
+int get_mod_value(const char **txt)
+{
+    if(!txt || !txt[0]) {
         return 0;
     }
 
-    int c,i;
+    int c, i;
 
-    for(c=0;mod_mapped[c].map!=0;c++){
-        i=strlen(mod_mapped[c].name);
-        if(strncmp(mod_mapped[c].name,txt[0],i)==0 && (is_white_space(txt[0][i]) || txt[0][i]==0 || txt[0][i]=='+')){
-            txt[0]+=i;
+    for(c = 0; mod_mapped[c].map != 0; c++) {
+        i = strlen(mod_mapped[c].name);
+        if(strncmp(mod_mapped[c].name, txt[0], i) == 0
+           && (is_white_space(txt[0][i]) || txt[0][i] == 0 || txt[0][i] == '+')
+        ) {
+            txt[0] += i;
             return mod_mapped[c].value;
         }
     }
@@ -466,11 +474,12 @@ int get_mod_value(const char **txt) {
     return 0;
 }
 
-int get_mod_value_from_map(int val){
+int get_mod_value_from_map(int val)
+{
     int i;
 
-    for(i=0;mod_mapped[i].map!=0;i++){
-        if(mod_mapped[i].map==val){
+    for(i = 0; mod_mapped[i].map != 0; i++) {
+        if(mod_mapped[i].map == val){
             return mod_mapped[i].value;
         }
     }
