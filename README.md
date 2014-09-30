@@ -91,3 +91,8 @@ THANKS
 ---
 1. to Benjamin Bolton for sharing the keyd's source code
 
+USEFUL LINKS
+---
+[boycott systemd](http://boycottsystemd.org)
+
+

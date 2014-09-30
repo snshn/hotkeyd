@@ -5,7 +5,7 @@
 
 CC="gcc"
 DESTDIR=""
-VERSION="0.4.1"
+VERSION="0.4.2"
 
 all: clean hotkeyd
 
@@ -18,17 +18,14 @@ clean:
 install: all
 	mkdir $(DESTDIR)/usr/bin -p
 	mkdir $(DESTDIR)/etc/rc.d -p
-	mkdir $(DESTDIR)/usr/lib/systemd/system -p
 	cp hotkeyd         $(DESTDIR)/usr/bin/
 	cp hotkeyd.daemon  $(DESTDIR)/etc/rc.d/hotkeyd
 	cp hotkeyd.conf    $(DESTDIR)/etc/
-	cp hotkeyd.service $(DESTDIR)/usr/lib/systemd/system/
 
 uninstall:
 	rm -f $(DESTDIR)/usr/bin/keyd
 	rm -f $(DESTDIR)/etc/rc.d/keyd
 	rm -f $(DESTDIR)/etc/keyd.conf
-	rm -f $(DESTDIR)/usr/lib/systemd/system/keyd.service
 
 recompile: clean all
 
