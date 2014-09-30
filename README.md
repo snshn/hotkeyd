@@ -10,6 +10,7 @@ CHANGES
 ---
 - renamed to hotkeyd
 - no logging to files
+- removed the systemd shit
 
 
 LICENSE
@@ -53,29 +54,11 @@ where <KEYS> is a list of modifiers and a key seperated by a '+', e.g.:
     F1          <command when F1 pressed>
     LEFTCTRL+F1 <command when Control-F1 pressed>
 
-You can use "/usr/bin/hotkeyd --test" to get a list of key names
-
-After changing the configuration file, keyd will need to been restarted,
-
-e.g. with systemd as root:
-    `systemctl restart hotkeyd.service`
-
-or with initscripts:
-    `/etc/rc.d/hotkeyd restart`
-
+You can use `hotkeyd --test` to get a list of key names
 
 RUNNING
 ---
-the Makefile will install daemon packages for initscripts and systemd.
-
-To start the daemon using systemd run as root:
-    `systemctl start hotkeyd.service`
-
-and to stop it run as root:
-    `systemctl stop hotkeyd.service`
-
-and to enable it to run at startup run as root:
-    `systemctl enable hotkeyd.service`
+the Makefile will install daemon packages for initscripts.
 
 To start the daemon using initscripts run as root:
     `/etc/rc.d/hotkeyd start`
@@ -85,7 +68,7 @@ and to stop it run as root:
 To enable it to run at startup add hotkeyd to the DAEMONS array of `/etc/rc.conf`
 
 hotkeyd can also be run indepently of the daemon scripts by running
-`/usr/bin/hotkeyd`, see `/usr/bin/hotkeyd --help` for information on usage
+`hotkeyd`, see `hotkeyd --help` for information on usage
 
 THANKS
 ---
