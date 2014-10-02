@@ -1,7 +1,7 @@
 /*
-    keyd.c
+    log.h
 
-    Forked from Benjamin Bolton's keyd
+    Fork of Benjamin Bolton's keyd
     license: GPLv3
 */
 

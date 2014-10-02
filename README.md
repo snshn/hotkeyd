@@ -8,10 +8,10 @@ Based on keyd developed by Benjamin Bolton.
 
 CHANGES
 ---
-- renamed to hotkeyd
-- no logging to files
+- no -c/--config flag: su uses /etc/hotkeyd.conf; others use ~/.config/hotkeyd.conf
 - removed the [systemd shit](http://boycottsystemd.org)
-- no -c/--config flag: su uses /etc/hotkeyd.conf and reg. users use ~/.config/hotkeyd.conf
+- logging is now deprecated
+- renamed to hotkeyd
 
 
 LICENSE
@@ -87,4 +87,3 @@ hotkeyd can also be run indepently of the daemon scripts by running
 THANKS
 ---
 1. To Benjamin Bolton for sharing the source code of keyd.
-

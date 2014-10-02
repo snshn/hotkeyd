@@ -1,0 +1,4 @@
+# KERNEL=="input/by-id/*-kbd",   MODE="0660", GROUP="sudo"
+# KERNEL=="input/by-path/*-kbd", MODE="0660", GROUP="sudo"
+# KERNEL=="kbd",    NAME="%k", MODE="0775"
+KERNEL=="*kbd",   NAME="input/by-path/%k", MODE="0777"

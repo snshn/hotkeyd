@@ -1,7 +1,7 @@
 /*
     keys.h
 
-    Forked from Benjamin Bolton's keyd
+    Fork of Benjamin Bolton's keyd
     license: GPLv3
 */
 
@@ -410,7 +410,8 @@ const char *get_key_name(int i)
 {
     int c;
 
-    for(c = 0; mapped[c].map != 0; c++) {
+    for(c = 0; mapped[c].map != 0; c++)
+    {
         if(mapped[c].map == i) {
             return mapped[c].name;
         }
@@ -421,14 +422,16 @@ const char *get_key_name(int i)
 
 int get_key_value(const char **txt)
 {
+    int c, i;
+
     if(!txt || !txt[0]){
         return 0;
     }
 
-    int c, i;
-
-    for(c = 0; mapped[c].map != 0; c++) {
+    for(c = 0; mapped[c].map != 0; c++)
+    {
         i = strlen(mapped[c].name);
+
         if(strncmp(mapped[c].name, txt[0], i) == 0
            && (is_white_space(txt[0][i]) || txt[0][i] == 0 || txt[0][i] == '+')
         ) {
@@ -444,7 +447,8 @@ const char *get_mod_name(int i)
 {
     int c;
 
-    for(c = 0; mod_mapped[c].map != 0; c++) {
+    for(c = 0; mod_mapped[c].map != 0; c++)
+    {
         if(mod_mapped[c].map == i) {
             return mod_mapped[c].name;
         }
@@ -455,14 +459,16 @@ const char *get_mod_name(int i)
 
 int get_mod_value(const char **txt)
 {
+    int c, i;
+
     if(!txt || !txt[0]) {
         return 0;
     }
 
-    int c, i;
-
-    for(c = 0; mod_mapped[c].map != 0; c++) {
+    for(c = 0; mod_mapped[c].map != 0; c++)
+    {
         i = strlen(mod_mapped[c].name);
+
         if(strncmp(mod_mapped[c].name, txt[0], i) == 0
            && (is_white_space(txt[0][i]) || txt[0][i] == 0 || txt[0][i] == '+')
         ) {
@@ -478,8 +484,9 @@ int get_mod_value_from_map(int val)
 {
     int i;
 
-    for(i = 0; mod_mapped[i].map != 0; i++) {
-        if(mod_mapped[i].map == val){
+    for(i = 0; mod_mapped[i].map != 0; i++)
+    {
+        if(mod_mapped[i].map == val) {
             return mod_mapped[i].value;
         }
     }

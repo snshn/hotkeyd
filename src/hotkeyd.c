@@ -1,7 +1,7 @@
 /*
     hotkeyd.c
 
-    Forked from Benjamin Bolton's keyd
+    Fork of Benjamin Bolton's keyd
     license: GPLv3
 */
 
@@ -33,16 +33,16 @@ int is_white_space(int c)
 
 #include "log.h"
 #include "keys.h"
-#include "input-dev.h"
+#include "input_dev.h"
 
-#define SHELL       "/bin/sh"
-#define CONF_FILE   "hotkeyd.conf"
-#define COUNT_MODS  9
+#define SHELL      "/bin/sh"
+#define CONF_FILE  "hotkeyd.conf"
+#define COUNT_MODS 9
 
 struct hot_key {
-    int    key,mods;
-    char  *command;
-    struct hot_key *next;
+    int     key, mods;
+    char   *command;
+    struct  hot_key *next;
 };
 
 struct hot_key *first;
@@ -100,7 +100,7 @@ void new_hot_key(const char *txt)
 
     while(txt[0] != 0 && is_white_space(txt[0])) txt++;
 
-    i = strlen(txt)+1;
+    i = strlen(txt) + 1;
     tmp->command = (char*)malloc(sizeof(char) * i);
     tmp->command[0] = 0;
 
@@ -113,6 +113,7 @@ void new_hot_key(const char *txt)
 
     if(verbose_flag) {
         log_msg("New command \"%s\" with key %s value %i and mods %i:\n", tmp->command, get_key_name(tmp->key), tmp->key, tmp->mods);
+
         for(i = 0; i < COUNT_MODS; i++) {
             if((tmp->mods >> i) & 1) {
                 log_msg("  %s value %i\n", mod_mapped[i].name, mod_mapped[i].map);
@@ -124,7 +125,6 @@ void new_hot_key(const char *txt)
 struct hot_key *get_hot_key(int key, int mods)
 {
     struct hot_key *tmp = first;
-    // int i, c;
 
     if (key < 1) {
         return NULL;
@@ -143,10 +143,8 @@ struct hot_key *get_hot_key(int key, int mods)
 static struct option long_opts[] = {
     {"help",      no_argument,        0, 'h'},
     {"input",     required_argument,  0, 'i'},
-    // {"config",    required_argument,  0, 'c'},
     {"test",      no_argument,        0, 't'},
     {"quiet",     no_argument,        0, 'q'},
-    {"output",    required_argument,  0, 'o'},
     {0,           0,                  0, 0}
 };
 
@@ -162,7 +160,7 @@ void on_close(int sig)
     while(tmp) {
         tmp2 = tmp->next;
 
-        if(tmp->command){
+        if(tmp->command) {
             free(tmp->command);
         }
 
@@ -188,17 +186,15 @@ void run_command(const char *command)
 
 int main(int argc, char *argv[])
 {
-    int input_stream, test_flag = 0, c, opt_index, mods = 0, i, j, free_input = 0;
     FILE *fp;
     char *config = "/etc/"CONF_FILE, *input = NULL;
-    input_stream = open(input, O_RDONLY);
-    const char *tmpc;
+    int input_stream = open(input, O_RDONLY), test_flag = 0, c, opt_index, mods = 0, i, j, free_input = 0;
     char *line = NULL, *tmp;
     size_t len = 0;
-    first = NULL;
     struct hot_key *hk;
     struct input_event ev;
     uid_t uid = getuid(), euid = geteuid();
+    first = NULL;
 
     while(1) {
         c = getopt_long(argc, argv, "i:tqh", long_opts, &opt_index);
@@ -239,7 +235,7 @@ int main(int argc, char *argv[])
         if (uid > 0 && uid == euid) {
             char *homedir = getenv("HOME");
 
-            if(verbose_flag) log_msg("Not su.\n");
+            if(verbose_flag) log_msg("Running %s as a regular user.\n", argv[0]);
 
             if (homedir != NULL) {
                 if(verbose_flag) log_msg("The home dir is %s\n", homedir);
@@ -353,7 +349,7 @@ int main(int argc, char *argv[])
                     run_command(hk->command);
                 }
             }
-        } else if(ev.value == 0){
+        } else if(ev.value == 0) {
             i = get_mod_value_from_map(ev.code);
 
             if(i > 0) mods &= ~i;
@@ -362,4 +358,6 @@ int main(int argc, char *argv[])
     }
 
     on_close(0);
+
+    return 0;
 }

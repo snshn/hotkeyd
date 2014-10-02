@@ -7,7 +7,7 @@ CC         = gcc
 CFLAGS     = -Wall -pedantic
 CFLAGS_OPT = -O2
 DESTDIR    = ""
-VERSION    = "0.4.3"
+VERSION    = "0.4.4"
 
 all: clean hotkeyd
 
