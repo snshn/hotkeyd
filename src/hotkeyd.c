@@ -35,9 +35,9 @@ int is_white_space(int c)
 #include "keys.h"
 #include "input-dev.h"
 
-#define DEF_CONFIG     "/etc/hotkeyd.conf"
-#define CALL_BIN       "/bin/sh"
-#define COUNT_MODS     9
+#define SHELL       "/bin/sh"
+#define CONF_FILE   "hotkeyd.conf"
+#define COUNT_MODS  9
 
 struct hot_key {
     int    key,mods;
@@ -124,7 +124,7 @@ void new_hot_key(const char *txt)
 struct hot_key *get_hot_key(int key, int mods)
 {
     struct hot_key *tmp = first;
-    int i, c;
+    // int i, c;
 
     if (key < 1) {
         return NULL;
@@ -143,7 +143,7 @@ struct hot_key *get_hot_key(int key, int mods)
 static struct option long_opts[] = {
     {"help",      no_argument,        0, 'h'},
     {"input",     required_argument,  0, 'i'},
-    {"config",    required_argument,  0, 'c'},
+    // {"config",    required_argument,  0, 'c'},
     {"test",      no_argument,        0, 't'},
     {"quiet",     no_argument,        0, 'q'},
     {"output",    required_argument,  0, 'o'},
@@ -179,7 +179,7 @@ void run_command(const char *command)
     pid_t pID = fork();
 
     if(pID == 0) {
-        execl(CALL_BIN, CALL_BIN, "-c", command, NULL);
+        execl(SHELL, SHELL, "-c", command, NULL);
         exit(-1);
     } else if(pID < 0) {
         log_err("Failed to fork process!\n");
@@ -190,17 +190,18 @@ int main(int argc, char *argv[])
 {
     int input_stream, test_flag = 0, c, opt_index, mods = 0, i, j, free_input = 0;
     FILE *fp;
-    char *input = NULL;
+    char *config = "/etc/"CONF_FILE, *input = NULL;
     input_stream = open(input, O_RDONLY);
-    const char *config = DEF_CONFIG, *tmpc;
+    const char *tmpc;
     char *line = NULL, *tmp;
     size_t len = 0;
     first = NULL;
     struct hot_key *hk;
     struct input_event ev;
+    uid_t uid = getuid(), euid = geteuid();
 
     while(1) {
-        c = getopt_long(argc, argv, "i:c:tqh", long_opts, &opt_index);
+        c = getopt_long(argc, argv, "i:tqh", long_opts, &opt_index);
 
         if(c == -1) {
             break;
@@ -209,10 +210,6 @@ int main(int argc, char *argv[])
         switch(c) {
             case 'i':
                 input = optarg;
-                break;
-
-            case 'c':
-                config = optarg;
                 break;
 
             case 't':
@@ -225,14 +222,35 @@ int main(int argc, char *argv[])
 
             case 'h':
             case '?':
-                printf("usage: %s [options]\n\nOptions:\n -h --help      Show this help\n -i --input     Input to connect to\n", argv[0]);
-                printf(" -c --config    Config file with hotkeys\n                Default: %s\n -t --test      Use to find the name's to use for keys\n", DEF_CONFIG);
-                printf("                Note: does not load config file\n -q --quiet     Do not output messages\n\n");
+                printf("usage: %s [options]\n\n", argv[0]);
+
+                printf("Options:\n");
+                printf(" -h --help      Show this message\n");
+                printf(" -i --input     Input to connect to\n");
+                printf(" -t --test      Use to find the name's to use for keys\n");
+                printf("                Note: does not load config file\n");
+                printf(" -q --quiet     Do not output messages\n\n");
+
                 return (c != 'h');
         }
     }
 
     if(!test_flag) {
+        if (uid > 0 && uid == euid) {
+            char *homedir = getenv("HOME");
+
+            if(verbose_flag) log_msg("Not su.\n");
+
+            if (homedir != NULL) {
+                if(verbose_flag) log_msg("The home dir is %s\n", homedir);
+
+                config = homedir;
+                strcat(config, "/.config/"CONF_FILE);
+            }
+        }
+
+        if(verbose_flag) log_msg("Using config file %s\n", config);
+
         fp = fopen(config, "r");
 
         if(!fp) {
@@ -240,7 +258,8 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        while(getline(&line, &len, fp) != -1) {
+        while(getline(&line, &len, fp) != -1)
+        {
             if(line) {
                 tmp = line;
 
